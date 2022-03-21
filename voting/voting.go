@@ -61,7 +61,7 @@ func NewVoteFromJSON(decoder *json.Decoder) (*Vote, error) {
 	return NewVote(vote.User, vote.GuessedDate)
 }
 
-func AddVote(vote *Vote) {
+func Add(vote *Vote) {
 	if vote == nil {
 		return
 	}

@@ -17,7 +17,7 @@ func AddApiRoutes(router *mux.Router) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		voting.AddVote(vote)
+		voting.Add(vote)
 		fmt.Fprintf(w, "You as %s guessed that the current time was %s (this was off by %s compared to UTC time)", *vote.User, vote.GuessedDate, vote.Difference)
 	}).Methods("POST")
 
