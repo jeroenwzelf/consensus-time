@@ -1,6 +1,7 @@
 package voting
 
 import (
+	"errors"
 	"time"
 )
 
@@ -43,11 +44,15 @@ func FindNearestDateForTime(Time *time.Time) *time.Time {
 	return &nearestDate
 }
 
-func TimeStringToDate(timeString string) (*time.Time, error) {
-	date, err := time.Parse(time.Kitchen, timeString)
-	if err != nil {
-		return nil, err
+func TimeStringToDate(timeString string, formats []string) (*time.Time, error) {
+	var errorString = "Could not parse time:"
+	for _, format := range formats {
+		date, err := time.Parse(format, timeString)
+		if err == nil {
+			return &date, nil
+		}
+		errorString = errorString + "\n\tformat " + format + " failed: " + err.Error()
 	}
 
-	return &date, nil
+	return nil, errors.New(errorString)
 }

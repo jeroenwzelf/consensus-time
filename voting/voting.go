@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"sort"
+	"strings"
 	"time"
 )
 
 var defaultUser string = "Anonymous"
+var formats = []string{"15:04:05", "15:04", time.Kitchen}
 
 type VoteJSON struct {
 	User        *string    `json:"user"`
@@ -46,11 +48,11 @@ func NewVoteFromJSON(decoder *json.Decoder) (*Vote, error) {
 	if vote.GuessedDate == nil {
 		if vote.GuessedTime == nil {
 			return nil, errors.New("You need to specify the time or date you are guessing in the 'time' or 'date' field of your JSON body. Examples:\n" +
-				"\ttime: 01:04AM\n" +
+				"\ttime: " + strings.Join(formats, " | ") + "\n" +
 				"\tdate: 2022-03-21T01:04:40Z")
 		}
 
-		date, err := TimeStringToDate(*vote.GuessedTime)
+		date, err := TimeStringToDate(*vote.GuessedTime, formats)
 		if err != nil {
 			return nil, err
 		}

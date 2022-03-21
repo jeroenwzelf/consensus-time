@@ -6,6 +6,23 @@
     <title>Consensus Time</title>
 
     <script>
+        function voteButton() {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    if (!alert(xhr.responseText)){
+                        window.location.reload();
+                    }
+                }
+            }
+
+            xhr.open("POST", "/vote", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({
+                time: document.getElementById("guesstime_input").value
+            }));
+        }
+
         function getDateNowUTC() {
             var date = new Date(); 
             var now_utc =  Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
@@ -30,17 +47,13 @@
     </script>
   </head>
   <body>
-    <div style="display: flex; flex-direction: column; align-items: center">
+    <div style="display: flex; flex-direction: column; align-items: stretch">
         <div style="display: flex; align-items: center; justify-content: space-around">
             <div style="display: flex; flex-direction: column; align-items: center">
-                <!-- Put voting here -->
-
-                <!-- <p>Guess the time here!</p>
-                <form action="/vote" method="post">
-                    <label for="guesstime">Enter what you feel like the time is right now:</label>
-                    <input type="datetime-local" id="guesstime" name="time">
-                    <input type="submit">
-                </form> -->
+                <p>Guess the time here!</p>
+                <label for="guesstime_input">Enter what you feel like the time is right now:</label>
+                <input type="time" id="guesstime_input" name="time">
+                <button onclick='voteButton()'>Submit</button>
             </div>
             <div style="display: flex; flex-direction: column; align-items: center">
                 <div class='xkcd-embed' data-id='2594'></div>
