@@ -50,10 +50,12 @@
     <div style="display: flex; flex-direction: column; align-items: stretch">
         <div style="display: flex; align-items: center; justify-content: space-around">
             <div style="display: flex; flex-direction: column; align-items: center">
-                <p>Guess the time here!</p>
+                <h2>Guess the time here!</h2>
                 <label for="guesstime_input">Enter what you feel like the time is right now:</label>
-                <input type="time" id="guesstime_input" name="time">
-                <button onclick='voteButton()'>Submit</button>
+                <div>
+                    <input type="time" id="guesstime_input" name="time" value="00:00:00">
+                    <button onclick='voteButton()'>Submit</button>
+                </div>
             </div>
             <div style="display: flex; flex-direction: column; align-items: center">
                 <div class='xkcd-embed' data-id='2594'></div>
