@@ -2,13 +2,8 @@ package main
 
 import (
 	"ConsensusTime/server"
-	"ConsensusTime/voting"
 	"context"
-	"encoding/json"
 	"flag"
-	"fmt"
-	"html/template"
-	"net/http"
 	"os"
 	"os/signal"
 	"time"
@@ -16,40 +11,10 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func NewIndexHtmlTemplateExecutor() *template.Template {
-	return template.Must(template.New("index.gohtml").Funcs(template.FuncMap{
-		"GetConsensusDateDifferenceMillis": func() int64 {
-			return int64(voting.GetConsensusTimeDifference().Milliseconds())
-		},
-	}).ParseFiles("html/index.gohtml"))
-}
-
 func router() *mux.Router {
 	router := server.NewDefaultRouter()
-	templateExecutor := NewIndexHtmlTemplateExecutor()
-
-	// Root shows static html template `index.gohtml`
-	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if err := templateExecutor.Execute(w, nil); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-	})
-
-	// POST request to vote
-	router.HandleFunc("/vote", func(w http.ResponseWriter, r *http.Request) {
-		vote, err := voting.NewVoteFromJSON(json.NewDecoder(r.Body))
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		voting.AddVote(vote)
-		fmt.Fprintf(w, "You as %s guessed that the current time was %s (this was off by %s compared to UTC time)", *vote.User, vote.GuessedDate, vote.Difference)
-	}).Methods("POST")
-
-	// GET request to see all votes
-	router.HandleFunc("/votes", func(w http.ResponseWriter, r *http.Request) {
-		json.NewEncoder(w).Encode(voting.Votes())
-	}).Methods("GET")
+	server.AddWebPageRoutes(router)
+	server.AddApiRoutes(router)
 
 	return router
 }
