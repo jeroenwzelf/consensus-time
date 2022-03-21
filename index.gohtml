@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel='stylesheet' href='http://xkcd-embedder.fahmidur.us/css/xkcd-embedder.css'/>
+    <title>Consensus Time</title>
+
+    <script>
+        function getDateNowUTC() {
+            var date = new Date(); 
+            var now_utc =  Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
+            date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+
+            return new Date(now_utc);
+        }
+
+        function dateToString(date) {
+            return date.toLocaleString('en-GB');
+        }
+
+        window.onload = function() {
+            setInterval(() => {
+                const utcDate = getDateNowUTC();
+                const consensusDate = new Date(utcDate.valueOf() - {{ GetConsensusDateDifferenceMillis }});
+
+                document.getElementById("utc-time").innerHTML = dateToString(utcDate) + " Coordinated Universal Time";
+                document.getElementById("consensus-time").innerHTML = dateToString(consensusDate) + " Consensus Median Time";
+            }, 500);
+        };
+    </script>
+  </head>
+  <body>
+    <div style="display: flex; flex-direction: column; align-items: center">
+        <div style="display: flex; align-items: center; justify-content: space-around">
+            <div style="display: flex; flex-direction: column; align-items: center">
+                <!-- Put voting here -->
+
+                <!-- <p>Guess the time here!</p>
+                <form action="/vote" method="post">
+                    <label for="guesstime">Enter what you feel like the time is right now:</label>
+                    <input type="datetime-local" id="guesstime" name="time">
+                    <input type="submit">
+                </form> -->
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center">
+                <div class='xkcd-embed' data-id='2594'></div>
+                <div style="display: flex; flex-direction: column; align-items: left;">
+                    <h2 id="consensus-time" style="margin: 0px"></h2>
+                    <h2 id="utc-time" style="margin: 0px"></h2>
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center">
+                <!-- Put recent votes here or something -->
+            </div>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-around">
+            <!-- Put timeline with votes here or something -->
+        </div>
+    </div>
+
+    <script src='http://xkcd-embedder.fahmidur.us/js/xkcd-embedder.js'></script>
+  </body>
+</html>
