@@ -9,39 +9,55 @@ import (
 
 var defaultUser string = "Anonymous"
 
-type Vote struct {
+type VoteJSON struct {
 	User        *string    `json:"user"`
-	GuessedTime *time.Time `json:"time"`
-	ActualTime  time.Time
+	GuessedDate *time.Time `json:"date"`
+	GuessedTime *string    `json:"time"`
+}
+
+type Vote struct {
+	User        *string
+	GuessedDate *time.Time
+	ActualDate  time.Time
 	Difference  time.Duration
 }
 
 var votes = []Vote{}
 
-func NewVote(user *string, guessedTime *time.Time) (*Vote, error) {
+func NewVote(user *string, guessedDate *time.Time) (*Vote, error) {
 	if user == nil {
 		user = &defaultUser
 	}
 
-	if guessedTime == nil {
+	if guessedDate == nil {
 		return nil, errors.New("Can not create vote. A vote needs the time you are guessing.")
 	}
 
 	actualTime := time.Now().UTC()
-	return &Vote{user, guessedTime, actualTime, actualTime.Sub(guessedTime.UTC())}, nil
+	return &Vote{user, guessedDate, actualTime, guessedDate.UTC().Sub(actualTime)}, nil
 }
 
 func NewVoteFromJSON(decoder *json.Decoder) (*Vote, error) {
-	var vote Vote
+	var vote VoteJSON
 	if err := decoder.Decode(&vote); err != nil {
 		return nil, err
 	}
 
-	if vote.GuessedTime == nil {
-		return nil, errors.New("You need to specify the time you are guessing in the 'time' field of your JSON body.")
+	if vote.GuessedDate == nil {
+		if vote.GuessedTime == nil {
+			return nil, errors.New("You need to specify the time or date you are guessing in the 'time' or 'date' field of your JSON body. Examples:\n" +
+				"\ttime: 01:04AM\n" +
+				"\tdate: 2022-03-21T01:04:40Z")
+		}
+
+		date, err := TimeStringToDate(*vote.GuessedTime)
+		if err != nil {
+			return nil, err
+		}
+		vote.GuessedDate = FindNearestDateForTime(date)
 	}
 
-	return NewVote(vote.User, vote.GuessedTime)
+	return NewVote(vote.User, vote.GuessedDate)
 }
 
 func AddVote(vote *Vote) {

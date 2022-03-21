@@ -43,7 +43,7 @@ func router() *mux.Router {
 			return
 		}
 		voting.AddVote(vote)
-		fmt.Fprintf(w, "%s guessed that the current time was %s (this was off by %s)", *vote.User, vote.GuessedTime, vote.Difference)
+		fmt.Fprintf(w, "%s guessed that the current time was %s (this was off by %s)", *vote.User, vote.GuessedDate, vote.Difference)
 	}).Methods("POST")
 
 	// GET request to see all votes
