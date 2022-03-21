@@ -51,11 +51,6 @@ func router() *mux.Router {
 		json.NewEncoder(w).Encode(voting.Votes())
 	}).Methods("GET")
 
-	// Redirect any other route to root
-	router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-	})
-
 	return router
 }
 
