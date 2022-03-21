@@ -9,8 +9,10 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func NewDefaultRouter() *mux.Router {
+func router() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
+	AddWebPageRoutes(router)
+	AddApiRoutes(router)
 
 	// Redirect any other route to root
 	router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -20,7 +22,7 @@ func NewDefaultRouter() *mux.Router {
 	return router
 }
 
-func RunServer(port string, router *mux.Router) *http.Server {
+func RunServer(port string) *http.Server {
 	// Configure server
 	hostAddr := net.JoinHostPort("127.0.0.1", port)
 	server := &http.Server{
@@ -28,7 +30,7 @@ func RunServer(port string, router *mux.Router) *http.Server {
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 65,
-		Handler:      router,
+		Handler:      router(),
 	}
 
 	// Start server (non-blocking)

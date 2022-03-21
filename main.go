@@ -7,17 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"time"
-
-	"github.com/gorilla/mux"
 )
-
-func router() *mux.Router {
-	router := server.NewDefaultRouter()
-	server.AddWebPageRoutes(router)
-	server.AddApiRoutes(router)
-
-	return router
-}
 
 func flags() (time.Duration, string) {
 	var gracefulTimeoutDuration time.Duration
@@ -35,7 +25,7 @@ func flags() (time.Duration, string) {
 func main() {
 	gracefulTimeoutDuration, port := flags()
 
-	serverInstance := server.RunServer(port, router())
+	serverInstance := server.RunServer(port)
 
 	// Wait until SIGINT received
 	c := make(chan os.Signal, 1)
