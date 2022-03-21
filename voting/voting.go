@@ -70,6 +70,10 @@ func AddVote(vote *Vote) {
 	votes = append(votes, *vote)
 }
 
+func Clear() {
+	votes = []Vote{}
+}
+
 func Votes() []Vote {
 	return votes
 }

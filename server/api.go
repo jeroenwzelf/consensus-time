@@ -25,4 +25,9 @@ func AddApiRoutes(router *mux.Router) {
 	router.HandleFunc("/votes", func(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(voting.Votes())
 	}).Methods("GET")
+
+	// DELETE request to clear all votes
+	router.HandleFunc("/votes", func(w http.ResponseWriter, r *http.Request) {
+		voting.Clear()
+	}).Methods("DELETE")
 }
