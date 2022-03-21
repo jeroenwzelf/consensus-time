@@ -21,7 +21,7 @@ func NewIndexHtmlTemplateExecutor() *template.Template {
 		"GetConsensusDateDifferenceMillis": func() int64 {
 			return int64(voting.GetConsensusTimeDifference().Milliseconds())
 		},
-	}).ParseFiles("index.gohtml"))
+	}).ParseFiles("html/index.gohtml"))
 }
 
 func router() *mux.Router {
